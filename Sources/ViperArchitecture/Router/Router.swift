@@ -1,18 +1,23 @@
 import Foundation
 
-open class Router<Interactor: Interactable>: Routing {
+open class Router<InteractorType>: Routing {
   public final var children: [any Routing] = []
-  public let interactor: Interactor
+  public let interactor: InteractorType
+  public let interactable: Interactable
   
   private var isLoaded = false
   
-  public init(interactor: Interactor) {
+  public init(interactor: InteractorType) {
     self.interactor = interactor
+    guard let inteactable = interactor as? Interactable else {
+      fatalError()
+    }
+    self.interactable = inteactable
   }
   
   @MainActor
   deinit {
-    interactor.deactivate()
+    interactable.deactivate()
     if !children.isEmpty {
       detachAllChildren()
     }
@@ -20,12 +25,12 @@ open class Router<Interactor: Interactable>: Routing {
   
   public func attach(child: any Routing) {
     children.append(child)
-    child.interactor.activate()
+    child.interactable.activate()
     child.load()
   }
   
   public func detach(child: any Routing) {
-    child.interactor.deactivate()
+    child.interactable.deactivate()
     children.removeElementByReference(child)
   }
   

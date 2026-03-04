@@ -1,6 +1,6 @@
 import Foundation
 
-open class Presenter<ViewController: ViewControllable>: Presentable {
+open class Presenter<ViewController>: Presentable {
   public let viewController: ViewController
   
   public init(viewController: ViewController) {
