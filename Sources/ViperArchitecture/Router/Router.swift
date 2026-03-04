@@ -10,7 +10,7 @@ open class Router<InteractorType>: Routing {
   public init(interactor: InteractorType) {
     self.interactor = interactor
     guard let inteactable = interactor as? Interactable else {
-      fatalError()
+      fatalError("\(interactor) should conform to \(Interactable.self)")
     }
     self.interactable = inteactable
   }
