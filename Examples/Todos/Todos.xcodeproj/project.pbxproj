@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		55D47F2C2F57B3CF0062972B /* ViperArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 55D47F2B2F57B3CF0062972B /* ViperArchitecture */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		55D47EFD2F57B1810062972B /* Todos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55D47F2C2F57B3CF0062972B /* ViperArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				55D47EFF2F57B1810062972B /* Todos */,
+				55D47F2A2F57B3CF0062972B /* Frameworks */,
 				55D47EFE2F57B1810062972B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +62,13 @@
 				55D47EFD2F57B1810062972B /* Todos.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		55D47F2A2F57B3CF0062972B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +91,7 @@
 			);
 			name = Todos;
 			packageProductDependencies = (
+				55D47F2B2F57B3CF0062972B /* ViperArchitecture */,
 			);
 			productName = Todos;
 			productReference = 55D47EFD2F57B1810062972B /* Todos.app */;
@@ -345,6 +359,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		55D47F2B2F57B3CF0062972B /* ViperArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ViperArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 55D47EF52F57B1810062972B /* Project object */;
 }
