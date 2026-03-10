@@ -14,12 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   
   private func launch(from window: UIWindow) {
     self.window = window
-    let viewController = RootViewController()
-    let interactor = RootInteractor(presenter: viewController)
-    let router = RootRouter(
-      interactor: interactor,
-      viewController: viewController
-    )
+    let router = RootBuilder().build()
     router.launch(from: window)
     launchRouter = router
   }
