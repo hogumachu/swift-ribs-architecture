@@ -1,5 +1,5 @@
+import RIBsArchitecture
 import UIKit
-import ViperArchitecture
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?

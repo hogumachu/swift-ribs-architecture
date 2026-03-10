@@ -1,4 +1,4 @@
 import Foundation
-import ViperArchitecture
+import RIBsArchitecture
 
 protocol RootPresentable: Presentable {}

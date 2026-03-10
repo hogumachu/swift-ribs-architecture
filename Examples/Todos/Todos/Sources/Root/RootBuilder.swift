@@ -1,5 +1,5 @@
+import RIBsArchitecture
 import UIKit
-import ViperArchitecture
 
 protocol RootBuildable: Buildable {
   func build() -> LaunchRouting

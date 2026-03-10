@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		55D47F2C2F57B3CF0062972B /* ViperArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 55D47F2B2F57B3CF0062972B /* ViperArchitecture */; };
+		556E735B2F6001EC007F39D5 /* RIBsArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 556E735A2F6001EC007F39D5 /* RIBsArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55D47F2C2F57B3CF0062972B /* ViperArchitecture in Frameworks */,
+				556E735B2F6001EC007F39D5 /* RIBsArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,7 +91,7 @@
 			);
 			name = Todos;
 			packageProductDependencies = (
-				55D47F2B2F57B3CF0062972B /* ViperArchitecture */,
+				556E735A2F6001EC007F39D5 /* RIBsArchitecture */,
 			);
 			productName = Todos;
 			productReference = 55D47EFD2F57B1810062972B /* Todos.app */;
@@ -361,9 +361,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		55D47F2B2F57B3CF0062972B /* ViperArchitecture */ = {
+		556E735A2F6001EC007F39D5 /* RIBsArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = ViperArchitecture;
+			productName = RIBsArchitecture;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

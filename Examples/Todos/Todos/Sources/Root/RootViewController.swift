@@ -1,5 +1,5 @@
+import RIBsArchitecture
 import UIKit
-import ViperArchitecture
 
 final class RootViewController:
   UIViewController,

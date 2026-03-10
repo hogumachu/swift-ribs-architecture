@@ -1,5 +1,5 @@
 import Foundation
-import ViperArchitecture
+import RIBsArchitecture
 
 protocol RootInteractable: Interactable {}
 
