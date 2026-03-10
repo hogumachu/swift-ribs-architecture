@@ -1,5 +1,5 @@
-import Foundation
 import RIBsDependency
+import UIKit
 
 struct LeakDetectorClientKey: DependencyKey {
   public static let defaultValue = LeakDetectorClient(
@@ -15,8 +15,19 @@ struct LeakDetectorClientKey: DependencyKey {
           inTime: time
         )
       }
+    },
+    expectViewControllerDisappear: { viewController, time in
+      let weakObject = WeakObject(viewController)
+      Task {
+        await LeakStorage.shared.expectViewControllerDisappear(object: weakObject, inTime: time)
+      }
     }
   )
+}
+
+public struct LeakDefaultExpectationTime {
+  public static let deallocation = 1.0
+  public static let viewDisappear = 5.0
 }
 
 final class WeakObject: @unchecked Sendable {
@@ -50,6 +61,24 @@ final actor LeakStorage {
     let message = "<\(objectDescription): \(objectID)> has leaked. Objects are expected to be deallocated at this time: \(trackingObjects)"
     assert(didDeallocate, message)
     trackingObjects.removeValue(forKey: objectID)
+  }
+  
+  func expectViewControllerDisappear(
+    object: WeakObject,
+    inTime time: TimeInterval = LeakDefaultExpectationTime.viewDisappear
+  )  async {
+    try? await Task.sleep(for: .seconds(time))
+    guard
+      !Task.isCancelled,
+      let viewController = object.object as? UIViewController
+    else {
+      return
+    }
+    let isViewLoaded = await viewController.isViewLoaded
+    let isWindowNull = await viewController.view.window == nil
+    let viewDidDisappear = (!isViewLoaded || isWindowNull)
+    let message = "\(viewController) appearance has leaked. Either its parent router who does not own a view controller was detached, but failed to dismiss the leaked view controller; or the view controller is reused and re-added to window, yet the router is not re-attached but re-created. Objects are expected to be deallocated at this time: \(trackingObjects)"
+    assert(viewDidDisappear, message)
   }
 }
 
