@@ -1,7 +1,16 @@
+import Combine
 import Foundation
 
+public enum RouterLifecycle: Sendable {
+  case didLoad
+}
+
 @MainActor
-public protocol Routing: AnyObject {
+public protocol RouterScope: AnyObject {
+  var lifecycle: AnyPublisher<RouterLifecycle, Never> { get }
+}
+
+public protocol Routing: RouterScope {
   var children: [any Routing] { get }
   var interactable: Interactable { get }
   

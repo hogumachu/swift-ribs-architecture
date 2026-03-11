@@ -6,10 +6,14 @@ open class Router<InteractorType>: Routing {
   public final var children: [any Routing] = []
   public let interactor: InteractorType
   public let interactable: Interactable
+  public final var lifecycle: AnyPublisher<RouterLifecycle, Never> {
+    lifecycleSubject.eraseToAnyPublisher()
+  }
   
   let deinitCancellable = CompositeCancellable()
   
   private var isLoaded = false
+  private let lifecycleSubject = PassthroughSubject<RouterLifecycle, Never>()
   
   @Dependency(\.leakDetectorClient) private var leakDetectorClient
   
@@ -27,6 +31,7 @@ open class Router<InteractorType>: Routing {
     if !children.isEmpty {
       detachAllChildren()
     }
+    lifecycleSubject.send(completion: .finished)
     deinitCancellable.cancel()
     leakDetectorClient.expectDeallocate(interactable)
   }
@@ -54,6 +59,7 @@ open class Router<InteractorType>: Routing {
   
   func internalDidLoad() {
     bindSubtreeActiveState()
+    lifecycleSubject.send(.didLoad)
   }
   
   private func bindSubtreeActiveState() {
