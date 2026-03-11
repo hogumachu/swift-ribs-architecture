@@ -47,7 +47,7 @@ open class Router<InteractorType>: Routing {
     child.load()
   }
   
-  public func detach(child: any Routing) {
+  public final func detach(child: any Routing) {
     child.interactable.deactivate()
     children.removeElementByReference(child)
   }
