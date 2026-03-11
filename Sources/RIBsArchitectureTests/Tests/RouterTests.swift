@@ -52,23 +52,23 @@ struct RouterTests {
     #expect(childRouter.loadCallCount == 1)
   }
   
-//  @Test
-//  @MainActor
-//  func testAttachChildActivatesSubtreeOfTheChild() {
-//    let intector = InteractableMock()
-//    let router = Router(interactor: intector)
-//    let childInteractor = InteractableMock()
-//    let childRouter = RouterMock(interactor: childInteractor)
-//    let grandChildInteractor = InteractableMock()
-//    let grandChildRouter = RouterMock(interactor: grandChildInteractor)
-//    childRouter.attach(child: grandChildRouter)
-//    router.load()
-//    
-//    router.attach(child: childRouter)
-//    
-//    #expect(grandChildInteractor.activateCallCount == 1)
-//    #expect(grandChildRouter.loadCallCount == 1)
-//  }
+  @Test
+  @MainActor
+  func testAttachChildActivatesSubtreeOfTheChild() {
+    let intector = InteractableMock()
+    let router = Router(interactor: intector)
+    let childInteractor = InteractableMock()
+    let childRouter = Router(interactor: childInteractor)
+    let grandChildInteractor = InteractableMock()
+    let grandChildRouter = RouterMock(interactor: grandChildInteractor)
+    childRouter.attach(child: grandChildRouter)
+    router.load()
+    
+    router.attach(child: childRouter)
+    
+    #expect(grandChildInteractor.activateCallCount == 1)
+    #expect(grandChildRouter.loadCallCount == 1)
+  }
   
   @Test
   @MainActor
@@ -104,26 +104,17 @@ struct RouterTests {
     #expect(grandChildInteractor.deactivateCallCount == 1)
   }
   
-//  @Test
-//  func testDeinitTriggersLeakDetection() async {
-//    await withDependencies {
-//      $0.leakDetectorClient = .init(
-//        expectDeallocate: { _, _ in
-//          return Task {}
-//        },
-//        expectViewControllerDisappear: { _, _ in
-//          return Task {}
-//        }
-//      )
-//    } operation: {
-//      await MainActor.run {
-//        let interactor = InteractableMock()
-//        var router: Router<InteractableMock>!
-//        router = Router(interactor: interactor)
-//        router.load()
-//        
-//        router = nil
-//      }
-//    }
-//  }
+  @Test
+  @MainActor
+  func testDeinitTriggersLeakDetection() async {
+    let leakDetector = LeakDetectorMock()
+    LeakDetector.setInstance(leakDetector)
+    let interactor = InteractableMock()
+    var router: Router<InteractableMock>!
+    router = Router(interactor: interactor)
+    router.load()
+    
+    router = nil
+    #expect(leakDetector.expectDeallocateCallCount == 1)
+  }
 }
