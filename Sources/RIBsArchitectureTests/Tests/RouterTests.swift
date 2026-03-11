@@ -1,6 +1,7 @@
 @testable import RIBsArchitecture
 
 import Combine
+import Foundation
 import Testing
 
 struct RouterTests {
@@ -35,4 +36,94 @@ struct RouterTests {
     #expect(currentLifecycle == nil)
     #expect(didComplete)
   }
+  
+  @Test
+  @MainActor
+  func testAttachChild() {
+    let intector = InteractableMock()
+    let router = Router(interactor: intector)
+    let childInteractor = InteractableMock()
+    let childRouter = RouterMock(interactor: childInteractor)
+    
+    router.attach(child: childRouter)
+    
+    #expect(router.children.count == 1)
+    #expect(childInteractor.activateCallCount == 1)
+    #expect(childRouter.loadCallCount == 1)
+  }
+  
+//  @Test
+//  @MainActor
+//  func testAttachChildActivatesSubtreeOfTheChild() {
+//    let intector = InteractableMock()
+//    let router = Router(interactor: intector)
+//    let childInteractor = InteractableMock()
+//    let childRouter = RouterMock(interactor: childInteractor)
+//    let grandChildInteractor = InteractableMock()
+//    let grandChildRouter = RouterMock(interactor: grandChildInteractor)
+//    childRouter.attach(child: grandChildRouter)
+//    router.load()
+//    
+//    router.attach(child: childRouter)
+//    
+//    #expect(grandChildInteractor.activateCallCount == 1)
+//    #expect(grandChildRouter.loadCallCount == 1)
+//  }
+  
+  @Test
+  @MainActor
+  func testDetachChild() {
+    let intector = InteractableMock()
+    let router = Router(interactor: intector)
+    let childInteractor = InteractableMock()
+    let childRouter = RouterMock(interactor: childInteractor)
+    router.attach(child: childRouter)
+    
+    router.detach(child: childRouter)
+    
+    #expect(router.children.count == 0)
+    #expect(childInteractor.deactivateCallCount == 1)
+  }
+  
+  @Test
+  @MainActor
+  func testDetachChildDeactivatesSubtreeOfTheChild() {
+    let intector = InteractableMock()
+    let router = Router(interactor: intector)
+    let childInteractor = Interactor()
+    let childRouter = Router(interactor: childInteractor)
+    let grandChildInteractor = InteractableMock()
+    let grandChildRouter = RouterMock(interactor: grandChildInteractor)
+    router.load()
+    router.attach(child: childRouter)
+    childRouter.attach(child: grandChildRouter)
+    grandChildInteractor.isActive = true
+    
+    router.detach(child: childRouter)
+    
+    #expect(grandChildInteractor.deactivateCallCount == 1)
+  }
+  
+//  @Test
+//  func testDeinitTriggersLeakDetection() async {
+//    await withDependencies {
+//      $0.leakDetectorClient = .init(
+//        expectDeallocate: { _, _ in
+//          return Task {}
+//        },
+//        expectViewControllerDisappear: { _, _ in
+//          return Task {}
+//        }
+//      )
+//    } operation: {
+//      await MainActor.run {
+//        let interactor = InteractableMock()
+//        var router: Router<InteractableMock>!
+//        router = Router(interactor: interactor)
+//        router.load()
+//        
+//        router = nil
+//      }
+//    }
+//  }
 }
