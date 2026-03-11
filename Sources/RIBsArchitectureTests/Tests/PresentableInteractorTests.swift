@@ -8,13 +8,12 @@ struct PresentableInteractorTests {
   @MainActor
   func testDeinitDoesNotLeakPresenter() {
     let leakDetector = LeakDetector()
-    LeakDetector.setInstance(leakDetector)
     let presenter = PresenterMock()
     var interactor: PresentableInteractor<PresenterMock>!
-    interactor = PresentableInteractor(presenter: presenter)
+    interactor = PresentableInteractor(presenter: presenter, leakDetector: leakDetector)
     var status = LeakDetectionStatus.didComplete
     var cancellable = Set<AnyCancellable>()
-    LeakDetector.shared.status.sink { newStatus in
+    leakDetector.status.sink { newStatus in
       status = newStatus
     }
     .store(in: &cancellable)

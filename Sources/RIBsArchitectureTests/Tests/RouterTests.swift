@@ -108,10 +108,9 @@ struct RouterTests {
   @MainActor
   func testDeinitTriggersLeakDetection() async {
     let leakDetector = LeakDetectorMock()
-    LeakDetector.setInstance(leakDetector)
     let interactor = InteractableMock()
     var router: Router<InteractableMock>!
-    router = Router(interactor: interactor)
+    router = Router(interactor: interactor, leakDetector: leakDetector)
     router.load()
     
     router = nil

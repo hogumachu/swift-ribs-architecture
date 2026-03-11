@@ -13,13 +13,18 @@ open class Router<InteractorType>: Routing {
   
   private var isLoaded = false
   private let lifecycleSubject = PassthroughSubject<RouterLifecycle, Never>()
+  private let leakDetector: LeakDetector
   
-  public init(interactor: InteractorType) {
+  public init(
+    interactor: InteractorType,
+    leakDetector: LeakDetector = .shared
+  ) {
     self.interactor = interactor
     guard let inteactable = interactor as? Interactable else {
       fatalError("\(interactor) should conform to \(Interactable.self)")
     }
     self.interactable = inteactable
+    self.leakDetector = leakDetector
   }
   
   @MainActor
@@ -30,7 +35,7 @@ open class Router<InteractorType>: Routing {
     }
     lifecycleSubject.send(completion: .finished)
     deinitCancellable.cancel()
-    LeakDetector.shared.expectDeallocate(object: interactable)
+    leakDetector.expectDeallocate(object: interactable)
   }
   
   open func didLoad() {}
@@ -47,7 +52,7 @@ open class Router<InteractorType>: Routing {
     children.removeElementByReference(child)
   }
   
-  public func load() {
+  public final func load() {
     if isLoaded { return }
     isLoaded = true
     internalDidLoad()

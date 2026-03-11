@@ -10,9 +10,17 @@ final class LeakDetectionHandleMock: LeakDetectionHandle {
   }
 }
 
+final class WeakObject {
+  weak var object: AnyObject?
+  
+  init(_ object: AnyObject) {
+    self.object = object
+  }
+}
+
 final class LeakDetectorMock: LeakDetector {
   var expectDeallocateCallCount = 0
-  var expectDeallocateObject: AnyObject?
+  var expectDeallocateObject: WeakObject?
   var expectDeallocateTime: TimeInterval?
   var expectDeallocateResult: (any LeakDetectionHandle)?
   override func expectDeallocate(
@@ -20,7 +28,7 @@ final class LeakDetectorMock: LeakDetector {
     inTime time: TimeInterval = LeakDefaultExpectationTime.deallocation
   ) -> any LeakDetectionHandle {
     expectDeallocateCallCount += 1
-    expectDeallocateObject = object
+    expectDeallocateObject = WeakObject(object)
     expectDeallocateTime = time
     return expectDeallocateResult ?? LeakDetectionHandleMock()
   }

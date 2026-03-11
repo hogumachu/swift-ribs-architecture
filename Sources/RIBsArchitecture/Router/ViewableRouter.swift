@@ -9,16 +9,20 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
   
   private var viewControllerDisappearExpectation: LeakDetectionHandle?
   
+  private let leakDetector: LeakDetector
+  
   public init(
     interactor: InteractorType,
-    viewController: ViewControllerType
+    viewController: ViewControllerType,
+    leakDetector: LeakDetector = .shared
   ) {
     self.viewController = viewController
     guard let viewControllable = viewController as? ViewControllable else {
       fatalError("\(viewController) shoud conform to \(ViewControllable.self)")
     }
     self.viewControllable = viewControllable
-    super.init(interactor: interactor)
+    self.leakDetector = leakDetector
+    super.init(interactor: interactor, leakDetector: leakDetector)
   }
   
   override func internalDidLoad() {
@@ -28,7 +32,7 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
   
   @MainActor
   deinit {
-    LeakDetector.shared.expectDeallocate(
+    leakDetector.expectDeallocate(
       object: viewControllable.uiViewController,
       inTime: LeakDefaultExpectationTime.viewDisappear
     )
@@ -43,9 +47,7 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
         viewControllerDisappearExpectation = nil
         
         if !isActive {
-          viewControllerDisappearExpectation = LeakDetector
-            .shared
-            .expectViewControllerDisappear(viewController: viewControllable.uiViewController)
+          viewControllerDisappearExpectation = leakDetector.expectViewControllerDisappear(viewController: viewControllable.uiViewController)
         }
       }
     deinitCancellable.insert(cancellable)

@@ -4,8 +4,16 @@ open class LaunchRouter<InteractorType, ViewControllerType>:
   ViewableRouter<InteractorType, ViewControllerType>,
   LaunchRouting
 {
-  public override init(interactor: InteractorType, viewController: ViewControllerType) {
-    super.init(interactor: interactor, viewController: viewController)
+  public override init(
+    interactor: InteractorType,
+    viewController: ViewControllerType,
+    leakDetector: LeakDetector = .shared
+  ) {
+    super.init(
+      interactor: interactor,
+      viewController: viewController,
+      leakDetector: leakDetector
+    )
   }
   
   public final func launch(from window: UIWindow) {

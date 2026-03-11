@@ -9,10 +9,16 @@ struct ViewableRouterTests {
   @MainActor
   func testLeakDetection() {
     let leakDetector = LeakDetectorMock()
-    LeakDetector.setInstance(leakDetector)
-    let interactor = PresentableInteractor(presenter: PresenterMock())
+    let interactor = PresentableInteractor(
+      presenter: PresenterMock(),
+      leakDetector: leakDetector
+    )
     let viewController = ViewControllableMock()
-    let router = ViewableRouter(interactor: interactor, viewController: viewController)
+    let router = ViewableRouter(
+      interactor: interactor,
+      viewController: viewController,
+      leakDetector: leakDetector
+    )
     router.load()
     
     interactor.deactivate()
@@ -25,10 +31,16 @@ struct ViewableRouterTests {
   @MainActor
   func testDeinitTriggersLeakDetection() {
     let leakDetector = LeakDetectorMock()
-    LeakDetector.setInstance(leakDetector)
-    let interactor = PresentableInteractor(presenter: PresenterMock())
+    let interactor = PresentableInteractor(
+      presenter: PresenterMock(),
+      leakDetector: leakDetector
+    )
     let viewController = ViewControllableMock()
-    var router: ViewableRouter! = ViewableRouter(interactor: interactor, viewController: viewController)
+    var router: ViewableRouter! = ViewableRouter(
+      interactor: interactor,
+      viewController: viewController,
+      leakDetector: leakDetector
+    )
     router.load()
     
     router = nil
