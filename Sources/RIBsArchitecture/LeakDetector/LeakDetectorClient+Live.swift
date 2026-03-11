@@ -7,7 +7,7 @@ struct LeakDetectorClientKey: DependencyKey {
       let description = String(describing: object)
       let id = String(ObjectIdentifier(object).hashValue)
       let weakObject = WeakObject(object)
-      Task {
+      return Task {
         await LeakStorage.shared.expectDeallocate(
           object: weakObject,
           objectID: id,
@@ -18,7 +18,7 @@ struct LeakDetectorClientKey: DependencyKey {
     },
     expectViewControllerDisappear: { viewController, time in
       let weakObject = WeakObject(viewController)
-      Task {
+      return Task {
         await LeakStorage.shared.expectViewControllerDisappear(object: weakObject, inTime: time)
       }
     }
