@@ -7,7 +7,7 @@ struct LaunchRouterTests {
   @Test
   @MainActor
   func testLaunchFromWindow() {
-    let interactor = InteractorMock()
+    let interactor = InteractableMock()
     let viewController = ViewControllableMock()
     let router = LaunchRouter(interactor: interactor, viewController: viewController)
     let window = WindowMock(frame: .zero)

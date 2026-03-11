@@ -1,26 +1,20 @@
 import Combine
 import RIBsArchitecture
 
-final class InteractorMock: Interactable {
-  var isActive: Bool {
-    active.value
+final class InteractorMock: Interactor {
+  var didBecomeActiveCallCount = 0
+  var didBecomeActiveHandler: (() -> Void)?
+  override func didBecomeActive() {
+    didBecomeActiveCallCount += 1
+    super.didBecomeActive()
+    didBecomeActiveHandler?()
   }
   
-  var isActiveStream: AnyPublisher<Bool, Never> {
-    active.eraseToAnyPublisher()
-  }
-  
-  private let active = CurrentValueSubject<Bool, Never>(false)
-  
-  var activateCallCount = 0
-  func activate() {
-    activateCallCount += 1
-    active.send(true)
-  }
-  
-  var deactivateCallCount = 0
-  func deactivate() {
-    deactivateCallCount += 1
-    active.send(false)
+  var willResignActiveCallCount = 0
+  var willResignActiveHandler: (() -> Void)?
+  override func willResignActive() {
+    willResignActiveCallCount += 1
+    super.willResignActive()
+    willResignActiveHandler?()
   }
 }
