@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import RIBsDependency
 
 open class ViewableRouter<InteractorType, ViewControllerType>:
   Router<InteractorType>,
@@ -14,16 +15,16 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
   
   public init(
     interactor: InteractorType,
-    viewController: ViewControllerType,
-    leakDetector: LeakDetector = .shared
+    viewController: ViewControllerType
   ) {
+    @Dependency(\.leakDetectorGenerator) var leakDetectorGenerator
     self.viewController = viewController
     guard let viewControllable = viewController as? ViewControllable else {
       fatalError("\(viewController) shoud conform to \(ViewControllable.self)")
     }
     self.viewControllable = viewControllable
-    self.leakDetector = leakDetector
-    super.init(interactor: interactor, leakDetector: leakDetector)
+    self.leakDetector = leakDetectorGenerator()
+    super.init(interactor: interactor)
   }
   
   override func internalDidLoad() {

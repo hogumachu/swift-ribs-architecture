@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import RIBsDependency
 
 open class Router<InteractorType>: Routing {
   public final var children: [any Routing] = []
@@ -16,15 +17,15 @@ open class Router<InteractorType>: Routing {
   private let leakDetector: LeakDetector
   
   public init(
-    interactor: InteractorType,
-    leakDetector: LeakDetector = .shared
+    interactor: InteractorType
   ) {
+    @Dependency(\.leakDetectorGenerator) var leakDetectorGenerator
     self.interactor = interactor
     guard let inteactable = interactor as? Interactable else {
       fatalError("\(interactor) should conform to \(Interactable.self)")
     }
     self.interactable = inteactable
-    self.leakDetector = leakDetector
+    self.leakDetector = leakDetectorGenerator()
   }
   
   @MainActor

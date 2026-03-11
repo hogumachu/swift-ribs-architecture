@@ -1,4 +1,5 @@
 import Foundation
+import RIBsDependency
 
 open class PresentableInteractor<PresenterType>: Interactor {
   public let presenter: PresenterType
@@ -6,11 +7,11 @@ open class PresentableInteractor<PresenterType>: Interactor {
   private let leakDetector: LeakDetector
   
   public init(
-    presenter: PresenterType,
-    leakDetector: LeakDetector = .shared
+    presenter: PresenterType
   ) {
+    @Dependency(\.leakDetectorGenerator) var leakDetectorGenerator
     self.presenter = presenter
-    self.leakDetector = leakDetector
+    self.leakDetector = leakDetectorGenerator()
   }
   
   @MainActor

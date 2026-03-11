@@ -6,13 +6,11 @@ open class LaunchRouter<InteractorType, ViewControllerType>:
 {
   public override init(
     interactor: InteractorType,
-    viewController: ViewControllerType,
-    leakDetector: LeakDetector = .shared
+    viewController: ViewControllerType
   ) {
     super.init(
       interactor: interactor,
-      viewController: viewController,
-      leakDetector: leakDetector
+      viewController: viewController
     )
   }
   
