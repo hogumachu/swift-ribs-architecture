@@ -1,5 +1,4 @@
 import Foundation
-import RIBsDependency
 
 open class ViewableRouter<InteractorType, ViewControllerType>:
   Router<InteractorType>,
@@ -8,9 +7,7 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
   public let viewController: ViewControllerType
   public let viewControllable: any ViewControllable
   
-  @Dependency(\.leakDetectorClient) private var leakDetectorClient
-  
-  private var viewControllerDisappearExpectation: Task<Void, Never>?
+  private var viewControllerDisappearExpectation: LeakDetectionHandle?
   
   public init(
     interactor: InteractorType,
@@ -31,8 +28,8 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
   
   @MainActor
   deinit {
-    leakDetectorClient.expectDeallocate(
-      viewControllable.uiViewController,
+    LeakDetector.shared.expectDeallocate(
+      object: viewControllable.uiViewController,
       inTime: LeakDefaultExpectationTime.viewDisappear
     )
   }
@@ -46,7 +43,9 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
         viewControllerDisappearExpectation = nil
         
         if !isActive {
-          viewControllerDisappearExpectation = leakDetectorClient.expectViewControllerDisappear(viewControllable.uiViewController)
+          viewControllerDisappearExpectation = LeakDetector
+            .shared
+            .expectViewControllerDisappear(viewController: viewControllable.uiViewController)
         }
       }
     deinitCancellable.insert(cancellable)

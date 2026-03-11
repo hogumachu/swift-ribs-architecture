@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import RIBsDependency
 
 open class Router<InteractorType>: Routing {
   public final var children: [any Routing] = []
@@ -14,8 +13,6 @@ open class Router<InteractorType>: Routing {
   
   private var isLoaded = false
   private let lifecycleSubject = PassthroughSubject<RouterLifecycle, Never>()
-  
-  @Dependency(\.leakDetectorClient) private var leakDetectorClient
   
   public init(interactor: InteractorType) {
     self.interactor = interactor
@@ -33,7 +30,7 @@ open class Router<InteractorType>: Routing {
     }
     lifecycleSubject.send(completion: .finished)
     deinitCancellable.cancel()
-    leakDetectorClient.expectDeallocate(interactable)
+    LeakDetector.shared.expectDeallocate(object: interactable)
   }
   
   open func didLoad() {}

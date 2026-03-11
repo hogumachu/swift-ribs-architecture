@@ -15,13 +15,7 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "RIBsArchitecture",
-      dependencies: [
-        "RIBsDependency"
-      ]
-    ),
-    .target(
-      name: "RIBsDependency"
+      name: "RIBsArchitecture"
     ),
     .testTarget(
       name: "RIBsArchitectureTests",
