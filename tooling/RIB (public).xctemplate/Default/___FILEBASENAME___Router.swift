@@ -2,10 +2,6 @@
 
 import RIBsArchitecture
 
-public protocol ___VARIABLE_productName___ViewControllable: ViewControllable {
-  // TODO: Declare methods the router invokes to manipulate the view hierarchy.
-}
-
 final class ___VARIABLE_productName___Router:
   Router<___VARIABLE_productName___Interactable>,
   ___VARIABLE_productName___Routing
@@ -18,5 +14,6 @@ final class ___VARIABLE_productName___Router:
   ) {
     self.viewController = viewController
     super.init(interactor: interactor)
+    interactor.router = self
   }
 }

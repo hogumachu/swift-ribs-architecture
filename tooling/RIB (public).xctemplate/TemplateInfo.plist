@@ -7,7 +7,7 @@
   <key>Summary</key>
   <string>RIB (public)</string>
   <key>Description</key>
-  <string>Public entry-point RIB classes for RIBsArchitecture.</string>
+  <string>Public entry-point RIB classes with generated interface contract file.</string>
   <key>SortOrder</key>
   <string>2</string>
   <key>AllowedTypes</key>

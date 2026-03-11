@@ -8,4 +8,5 @@ final class ___VARIABLE_productName___ViewController:
   ___VARIABLE_productName___Presentable,
   ___VARIABLE_productName___ViewControllable
 {
+  weak var listener: ___VARIABLE_productName___PresentableListener?
 }
