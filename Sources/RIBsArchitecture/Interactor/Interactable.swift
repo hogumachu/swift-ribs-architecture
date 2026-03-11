@@ -8,6 +8,6 @@ public protocol InteractorScope: AnyObject {
 }
 
 public protocol Interactable: InteractorScope {
- func activate()
+  func activate()
   func deactivate()
 }
