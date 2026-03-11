@@ -4,13 +4,17 @@ import Combine
 import Testing
 
 struct PresentableInteractorTests {
-  @Test
+  @Test(
+    "Deinit Does Not Leak Presenter",
+    arguments: [3, 5, 10, 100]
+  )
   @MainActor
-  func testDeinitDoesNotLeakPresenter() {
+  func testDeinitDoesNotLeakPresenter(count: Int) {
     let leakDetector = LeakDetector()
     let presenter = PresenterMock()
-    var interactor: PresentableInteractor<PresenterMock>!
-    interactor = PresentableInteractor(presenter: presenter, leakDetector: leakDetector)
+    var interactors = (1...count).map {
+      _ in PresentableInteractor(presenter: presenter, leakDetector: leakDetector)
+    }
     var status = LeakDetectionStatus.didComplete
     var cancellable = Set<AnyCancellable>()
     leakDetector.status.sink { newStatus in
@@ -20,7 +24,7 @@ struct PresentableInteractorTests {
     
     #expect(status == .didComplete)
     
-    interactor = nil
+    interactors.removeAll()
     
     #expect(status == .inProgress)
   }
