@@ -22,6 +22,12 @@ let package = Package(
     ),
     .target(
       name: "RIBsDependency"
+    ),
+    .testTarget(
+      name: "RIBsArchitectureTests",
+      dependencies: [
+        "RIBsArchitecture"
+      ]
     )
   ]
 )
