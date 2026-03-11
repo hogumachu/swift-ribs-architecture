@@ -7,7 +7,6 @@ struct PresentableInteractorTests {
   @Test
   @MainActor
   func testDeinitDoesNotLeakPresenter() {
-    final class PresenterMock {}
     let leakDetector = LeakDetector()
     LeakDetector.setInstance(leakDetector)
     let presenter = PresenterMock()
