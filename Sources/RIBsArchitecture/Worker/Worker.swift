@@ -12,7 +12,7 @@ open class Worker: Working {
       .eraseToAnyPublisher()
   }
   
-  var cancellable: CompositeCancellable?
+  var cancellable: CompositeCancellableBag?
   
   private let isStartedSubject = CurrentValueSubject<Bool, Never>(false)
   private var interactorBindingCancellable: AnyCancellable?
@@ -65,7 +65,7 @@ open class Worker: Working {
   }
   
   private func executeStart(_ interactorScope: InteractorScope) {
-    cancellable = CompositeCancellable()
+    cancellable = .init()
     didStart(interactorScope)
   }
   

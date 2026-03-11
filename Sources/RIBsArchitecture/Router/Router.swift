@@ -9,7 +9,7 @@ open class Router<InteractorType>: Routing {
     lifecycleSubject.eraseToAnyPublisher()
   }
   
-  let deinitCancellable = CompositeCancellable()
+  let deinitCancellable = CompositeCancellableBag()
   
   private var isLoaded = false
   private let lifecycleSubject = PassthroughSubject<RouterLifecycle, Never>()
@@ -70,7 +70,7 @@ open class Router<InteractorType>: Routing {
       .sink { [weak self] isActive in
         self?.setSubtree(isActive: isActive)
       }
-    deinitCancellable.insert(cancellable)
+    deinitCancellable.add(task: cancellable)
   }
   
   private func detachAllChildren() {

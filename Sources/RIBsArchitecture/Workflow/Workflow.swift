@@ -6,7 +6,7 @@ open class Workflow<ActionableItemType> {
   open func didFork() {}
   open func didReceiveError(_ error: Error) {}
   
-  let compositeCancellable = CompositeCancellable()
+  let compositeCancellable = CompositeCancellableBag()
   
   private let subject = PassthroughSubject<(ActionableItemType, ()), Error>()
   private var didInvokeComplete = false
@@ -26,10 +26,10 @@ open class Workflow<ActionableItemType> {
     }
   }
   
-  public final func subscribe(_ actionableItem: ActionableItemType) -> Cancellable {
+  public final func subscribe(_ actionableItem: ActionableItemType) -> AnyCancellableTask {
     guard compositeCancellable.count > 0 else {
       assertionFailure("Attempt to subscribe to \(self) before it is comitted.")
-      return CompositeCancellable()
+      return CompositeCancellableBag()
     }
     subject.send((actionableItem, ()))
     return compositeCancellable

@@ -67,6 +67,7 @@ open class Step<
     return self
   }
   
+  @MainActor
   @discardableResult
   public final func commit() -> Workflow<WorkflowActionableItemType> {
     let cancellable = publisher
@@ -74,13 +75,12 @@ open class Step<
         switch result {
         case .finished:
           self.workflow.didCompleteIfNotYet()
-          
         case let .failure(error):
           self.workflow.didReceiveError(error)
         }
       } receiveValue: { _ in }
-    
-    workflow.compositeCancellable.insert(cancellable)
+
+    workflow.compositeCancellable.add(task: cancellable)
     return workflow
   }
   

@@ -18,12 +18,12 @@ extension AnyPublisher {
   }
 }
 
-extension AnyCancellable {
+extension Task {
   @MainActor
   @discardableResult
-  public func cancelOnDeactivate(interactor: Interactor) -> AnyCancellable {
+  public func cancelOnDeactivate(interactor: Interactor) -> AnyCancellableTask {
     if let activenessCancellable = interactor.activenessCancellable {
-      activenessCancellable.insert(self)
+      activenessCancellable.add(task: self)
     } else {
       cancel()
       print("Subscription immediately terminated, since \(interactor) is inactive.")

@@ -10,7 +10,7 @@ open class Interactor: Interactable {
     isActiveSubject.removeDuplicates().eraseToAnyPublisher()
   }
   
-  private(set) var activenessCancellable: CompositeCancellable?
+  private(set) var activenessCancellable: CompositeCancellableBag?
   
   private let isActiveSubject = CurrentValueSubject<Bool, Never>(false)
   
