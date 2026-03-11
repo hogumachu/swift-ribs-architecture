@@ -19,7 +19,13 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "RIBsArchitecture"
+      name: "RIBsArchitecture",
+      dependencies: [
+        "RIBsDependency"
+      ]
+    ),
+    .target(
+      name: "RIBsDependency",
     ),
     .testTarget(
       name: "RIBsArchitectureTests",
