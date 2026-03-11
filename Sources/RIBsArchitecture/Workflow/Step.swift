@@ -70,13 +70,13 @@ open class Step<
   @discardableResult
   public final func commit() -> Workflow<WorkflowActionableItemType> {
     let cancellable = publisher
-      .sink { [weak self] result in
+      .sink { result in
         switch result {
         case .finished:
-          self?.workflow.didCompleteIfNotYet()
+          self.workflow.didCompleteIfNotYet()
           
         case let .failure(error):
-          self?.workflow.didReceiveError(error)
+          self.workflow.didReceiveError(error)
         }
       } receiveValue: { _ in }
     
