@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 
 open class ViewableRouter<InteractorType, ViewControllerType>:
@@ -50,6 +51,6 @@ open class ViewableRouter<InteractorType, ViewControllerType>:
           viewControllerDisappearExpectation = leakDetector.expectViewControllerDisappear(viewController: viewControllable.uiViewController)
         }
       }
-    deinitCancellable.insert(cancellable)
+    deinitCancellable.add(task: cancellable)
   }
 }

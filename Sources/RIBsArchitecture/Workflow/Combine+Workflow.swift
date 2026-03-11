@@ -11,8 +11,9 @@ extension Publisher {
   }
 }
 
-extension AnyCancellable {
+extension Task {
+  @MainActor
   public func cancelWith<ActionableItemType>(workflow: Workflow<ActionableItemType>) {
-    workflow.compositeCancellable.insert(self)
+    workflow.compositeCancellable.add(task: self)
   }
 }
