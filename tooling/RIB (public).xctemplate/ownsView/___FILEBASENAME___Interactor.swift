@@ -2,16 +2,8 @@
 
 import RIBsArchitecture
 
-public protocol ___VARIABLE_productName___Routing: ViewableRouting {
-  // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
-}
-
 protocol ___VARIABLE_productName___Presentable: Presentable {
   // TODO: Declare methods the interactor can invoke the presenter to present data.
-}
-
-public protocol ___VARIABLE_productName___Listener: AnyObject {
-  // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
 protocol ___VARIABLE_productName___Interactable: Interactable {
