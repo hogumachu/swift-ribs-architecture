@@ -18,5 +18,6 @@ final class ___VARIABLE_productName___Router:
   ) {
     self.viewController = viewController
     super.init(interactor: interactor)
+    interactor.router = self
   }
 }
