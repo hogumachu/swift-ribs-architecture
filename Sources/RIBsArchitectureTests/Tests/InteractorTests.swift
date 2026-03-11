@@ -98,55 +98,86 @@ struct InteractorTests {
   
   @Test
   @MainActor
-  func testObservableAttachedToInactiveInteactorIsDisposedImmediately() {
+  func testObservableAttachedToInactiveInteactorIsDisposedImmediately() async {
+    final class Box: @unchecked Sendable {
+      var onDisposeCalled = false
+    }
     let interactor = InteractorMock()
-    var onDisposeCalled = false
     let subjectEmiitingValues = PassthroughSubject<Int, Never>()
-    let observable = subjectEmiitingValues.eraseToAnyPublisher()
-      .handleEvents(
-        receiveCompletion: { _ in onDisposeCalled = true },
-        receiveCancel: { onDisposeCalled = true }
+    let box = Box()
+    let task = Task {
+      await withTaskCancellationHandler(
+        operation: {
+          for await _ in subjectEmiitingValues.values {}
+        },
+        onCancel: {
+          box.onDisposeCalled = true
+        }
       )
-    
-    observable.sink { _ in }.cancelOnDeactivate(interactor: interactor)
-    #expect(onDisposeCalled)
+    }
+
+    task.cancelOnDeactivate(interactor: interactor)
+    await Task.yield()
+
+    #expect(box.onDisposeCalled)
   }
   
   @Test
   @MainActor
-  func testObservableIsDisposedOnInteractorDeactivation() {
+  func testObservableIsDisposedOnInteractorDeactivation() async {
+    final class Box: @unchecked Sendable {
+      var onDisposeCalled = false
+    }
     let interactor = InteractorMock()
-    var onDisposeCalled = false
     let subjectEmiitingValues = PassthroughSubject<Int, Never>()
-    let observable = subjectEmiitingValues.eraseToAnyPublisher()
-      .handleEvents(
-        receiveCompletion: { _ in onDisposeCalled = true },
-        receiveCancel: { onDisposeCalled = true }
+    let box = Box()
+    let task = Task {
+      await withTaskCancellationHandler(
+        operation: {
+          for await _ in subjectEmiitingValues.values {}
+        },
+        onCancel: {
+          box.onDisposeCalled = true
+        }
       )
+    }
     interactor.activate()
-    observable.sink { _ in }.cancelOnDeactivate(interactor: interactor)
-    
+    task.cancelOnDeactivate(interactor: interactor)
+    await Task.yield()
+    #expect(box.onDisposeCalled == false)
+
     interactor.deactivate()
-    #expect(onDisposeCalled)
+    await Task.yield()
+    #expect(box.onDisposeCalled)
   }
   
   @Test
   @MainActor
-  func testObservableIsDisposedOnInteractorDeinit() {
+  func testObservableIsDisposedOnInteractorDeinit() async {
+    final class Box: @unchecked Sendable {
+      var onDisposeCalled = false
+    }
     var interactor: InteractorMock! = InteractorMock()
-    var onDisposeCalled = false
     let subjectEmiitingValues = PassthroughSubject<Int, Never>()
-    let observable = subjectEmiitingValues.eraseToAnyPublisher()
-      .handleEvents(
-        receiveCompletion: { _ in onDisposeCalled = true },
-        receiveCancel: { onDisposeCalled = true }
+    let box = Box()
+    let task = Task {
+      await withTaskCancellationHandler(
+        operation: {
+          for await _ in subjectEmiitingValues.values {}
+        },
+        onCancel: {
+          box.onDisposeCalled = true
+        }
       )
+    }
     interactor?.activate()
-    observable.sink { _ in }.cancelOnDeactivate(interactor: interactor)
-    #expect(onDisposeCalled == false)
+    task.cancelOnDeactivate(interactor: interactor)
+    await Task.yield()
+    #expect(box.onDisposeCalled == false)
     
     interactor = nil
-    #expect(onDisposeCalled)
+    await Task.yield()
+    #expect(box.onDisposeCalled)
   }
   
   @Test
