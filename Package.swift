@@ -13,6 +13,10 @@ let package = Package(
       targets: ["RIBsArchitecture"]
     ),
   ],
+  dependencies: [
+    // Test Dependencies
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2")
+  ],
   targets: [
     .target(
       name: "RIBsArchitecture"
@@ -20,7 +24,8 @@ let package = Package(
     .testTarget(
       name: "RIBsArchitectureTests",
       dependencies: [
-        "RIBsArchitecture"
+        "RIBsArchitecture",
+        "CwlPreconditionTesting",
       ]
     )
   ]
