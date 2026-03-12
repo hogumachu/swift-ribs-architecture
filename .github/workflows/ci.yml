@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package-tests:
+    name: Package tests
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Select Xcode 16.4
+        run: |
+          XCODE_PATH="/Applications/Xcode_16.4.app"
+          if [ -d "$XCODE_PATH" ]; then
+            sudo xcode-select -s "$XCODE_PATH"
+          else
+            echo "Xcode at $XCODE_PATH not found. Using default Xcode."
+          fi
+          xcodebuild -version
+
+      - name: Run package tests
+        run: |
+          WORKSPACE="RIBsArchitecture.xcworkspace"
+          SCHEME="RIBsArchitectureTests"
+          DESTINATION_ID="$(xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -showdestinations | awk -F '[,}]' '/platform:iOS Simulator/ && /name:iPhone/ { for (i=1; i<=NF; i++) if ($i ~ /id:/) { gsub(/.*id:[[:space:]]*/, \"\", $i); gsub(/[[:space:]]/, \"\", $i); print $i; exit } }')"
+
+          if [ -z "$DESTINATION_ID" ]; then
+            echo "No available iPhone simulator found."
+            xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -showdestinations
+            exit 1
+          fi
+
+          echo "Using simulator id: $DESTINATION_ID"
+          xcodebuild test \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
+            -destination "id=$DESTINATION_ID"
