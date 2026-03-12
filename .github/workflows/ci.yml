@@ -16,32 +16,42 @@ concurrency:
 jobs:
   package-tests:
     name: Package tests
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Select Xcode 16.4
+      - name: Show toolchain version
         run: |
-          XCODE_PATH="/Applications/Xcode_16.4.app"
-          if [ -d "$XCODE_PATH" ]; then
-            sudo xcode-select -s "$XCODE_PATH"
-          else
-            echo "Xcode at $XCODE_PATH not found. Using default Xcode."
-          fi
           xcodebuild -version
+          swift --version
+
+          XCODE_MAJOR="$(xcodebuild -version | awk 'NR==1 { print $2 }' | cut -d'.' -f1)"
+          if [ "${XCODE_MAJOR:-0}" -lt 26 ]; then
+            echo "Xcode 26+ is required for Swift 6.2 support in CI."
+            exit 1
+          fi
+
+          SWIFT_VERSION="$(swift --version | awk '/Swift version/ { print $3 }')"
+          SWIFT_MAJOR="${SWIFT_VERSION%%.*}"
+          SWIFT_MINOR="${SWIFT_VERSION#*.}"
+          SWIFT_MINOR="${SWIFT_MINOR%%.*}"
+          if [ "$SWIFT_MAJOR" -lt 6 ] || { [ "$SWIFT_MAJOR" -eq 6 ] && [ "$SWIFT_MINOR" -lt 2 ]; }; then
+            echo "Swift 6.2+ is required in CI. Current: $SWIFT_VERSION"
+            exit 1
+          fi
 
       - name: Run package tests
         run: |
           WORKSPACE="RIBsArchitecture.xcworkspace"
           SCHEME="RIBsArchitectureTests"
-          DESTINATION_ID="$(xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -showdestinations | awk -F '[,}]' '/platform:iOS Simulator/ && /name:iPhone/ { for (i=1; i<=NF; i++) if ($i ~ /id:/) { gsub(/.*id:[[:space:]]*/, \"\", $i); gsub(/[[:space:]]/, \"\", $i); print $i; exit } }')"
+          DESTINATION_ID="$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/ && !/unavailable/ { print $2; exit }')"
 
           if [ -z "$DESTINATION_ID" ]; then
             echo "No available iPhone simulator found."
-            xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -showdestinations
+            xcrun simctl list devices available
             exit 1
           fi
 
