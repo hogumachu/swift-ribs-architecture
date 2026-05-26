@@ -6,6 +6,7 @@ These templates generate starter files for RIBs built on `RIBsArchitecture`.
 
 - `RIB`: Internal-access RIB scaffold.
 - `RIB (public)`: Public-entry RIB scaffold with generated `*Interface.swift` contract file.
+- `RIB (dynamic)`: Public-entry componentized RIB scaffold with dynamic component dependency injection.
 - `RIB Unit Tests`: Swift Testing-based test scaffold.
 - `Scope Extension`: Parent-scope dependency extension scaffold.
 
@@ -15,6 +16,7 @@ These templates generate starter files for RIBs built on `RIBsArchitecture`.
 - `XIB` and `Storyboard` options are intentionally unsupported.
 - `Owns corresponding view` generates a code-based `ViewController.swift`.
 - `RIB (public)` generates `Listener`, `Routing`, `BuildDependency`, and `Buildable` in `*Interface.swift`.
+- `RIB (dynamic)` additionally generates `ComponentDependency` in `*Interface.swift` and `Dependency` plus `Component` in `*Builder.swift`.
 
 ## Installation
 

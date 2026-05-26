@@ -46,3 +46,46 @@ open class ComponentizedBuilder<
     fatalError("This method should be overridden by the subclass.")
   }
 }
+
+extension ComponentizedBuilder {
+  public final func build(
+    with dynamicBuildDependency: DynamicBuildDependency,
+    _ dynamicComponentDependency: DynamicComponentDependency
+  ) -> Router {
+    return build(
+      withDynamicBuildDependency: dynamicBuildDependency,
+      dynamicComponentDependency: dynamicComponentDependency
+    )
+  }
+}
+
+extension ComponentizedBuilder where DynamicComponentDependency == Void, DynamicBuildDependency == Void {
+  public final func build() -> Router {
+    return build(
+      withDynamicBuildDependency: (),
+      dynamicComponentDependency: ()
+    )
+  }
+}
+
+extension ComponentizedBuilder where DynamicComponentDependency == Void {
+  public final func build(
+    with dynamicBuildDependency: DynamicBuildDependency
+  ) -> Router {
+    return build(
+      withDynamicBuildDependency: dynamicBuildDependency,
+      dynamicComponentDependency: ()
+    )
+  }
+}
+
+extension ComponentizedBuilder where DynamicBuildDependency == Void {
+  public final func build(
+    with dynamicComponentDependency: DynamicComponentDependency
+  ) -> Router {
+    return build(
+      withDynamicBuildDependency: (),
+      dynamicComponentDependency: dynamicComponentDependency
+    )
+  }
+}
